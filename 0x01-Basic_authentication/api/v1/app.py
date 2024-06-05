@@ -30,7 +30,7 @@ def unauthorized(error) -> str:
 
 
 @app.errorhandler(403)
-def unauthorized(error) -> tuple[str, Literal[403]]:
+def unauthorized(error) -> str:
     """ Forbidden handler
     """
     return jsonify({"error": "Forbidden"}), 403
