@@ -16,13 +16,30 @@ class Auth:
         """
         Determines if authentication is required
         """
-        return False
+        if path is None:
+            return True
+        if not excluded_paths:
+            return True
+
+        # Ensure the path ends with a slash
+        if not path.endswith('/'):
+            path += '/'
+
+        for excluded_path in excluded_paths:
+            if excluded_path.endswith('/') and excluded_path == path:
+                return False
+
+        return True
+
 
     def authorization_header(self, request=None) -> str:
         """
         Returns the value of the Authorization header
         """
-        return None
+        if request is None:
+            return None
+        return request.headers.get('Authorization')
+
 
     def current_user(self, request=None) -> TypeVar('User'):
         """
