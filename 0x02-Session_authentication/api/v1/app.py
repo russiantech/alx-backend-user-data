@@ -50,6 +50,9 @@ def before_request_func():
     if auth.authorization_header(request) is None\
             and auth.session_cookie(request) is None:
         abort(401)
+    current_user = auth.current_user(request)
+    if current_user is None:
+        return jsonify({"error": "Forbidden"}), 403
     if auth.current_user(request) is None:
         abort(403)
     request.current_user = auth.current_user(request)
