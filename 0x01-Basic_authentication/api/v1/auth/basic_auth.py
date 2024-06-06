@@ -5,6 +5,7 @@ Module for BasicAuth class
 import base64
 from typing import TypeVar, List, Tuple
 from api.v1.auth.auth import Auth
+from models.user import User
 
 
 class BasicAuth(Auth):
@@ -61,9 +62,14 @@ class BasicAuth(Auth):
         if user_pwd is None or not isinstance(user_pwd, str):
             return None
         try:
-            user = User.search({'email': user_email})
-            if not user or not user[0].is_valid_password(user_pwd):
+            users = User.search({'email': user_email})
+            if not users:
+                print(f"No user found with email: {user_email}")
                 return None
-            return user[0]
+            user = users[0]
+            if not user.is_valid_password(user_pwd):
+                print("Invalid password for user")
+                return None
+            return user
         except Exception:
             return None
