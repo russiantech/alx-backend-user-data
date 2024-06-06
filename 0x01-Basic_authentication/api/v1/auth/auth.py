@@ -16,17 +16,17 @@ class Auth:
         """
         Determines if authentication is required
         """
-        if path is None:
+        if path is None or not excluded_paths:
             return True
-        if not excluded_paths:
-            return True
+        
+        if path[-1] != '/':
+            path = path + '/'
 
-        # Ensure the path ends with a slash
-        if not path.endswith('/'):
-            path += '/'
-
-        for excluded_path in excluded_paths:
-            if excluded_path.endswith('/') and excluded_path == path:
+        for excl_path in excluded_paths:
+            if excl_path.endswith('*'):
+                if path.startswith(excl_path[:-1]):
+                    return False
+            elif path == excl_path or path == excl_path + '/':
                 return False
 
         return True
